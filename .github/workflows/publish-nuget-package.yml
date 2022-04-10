@@ -36,4 +36,4 @@ jobs:
         working-directory: ${{ inputs.workingDirectory }}
         
       - name: Publish nuget package
-        run: dotnet nuget push ${{ inputs.workingDirectory }}/**/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source github --no-symbolss
+        run: dotnet nuget push ${{ inputs.workingDirectory }}/**/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source github --no-symbols
