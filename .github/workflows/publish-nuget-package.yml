@@ -1,0 +1,39 @@
+name: Publish NuGet Package
+
+on:
+  workflow_call:
+    inputs:
+      workingDirectory:
+        required: true
+        type: string
+    secrets:
+      NUGET_API_KEY:
+        required: true
+
+jobs:
+  pack_and_publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.7
+        with:
+          versionSpec: '5.x'
+
+      - name: Run GitVersion
+        uses: gittools/actions/gitversion/execute@v0.9.7
+      
+      - name: Add nuget github source
+        run: dotnet nuget add source https://nuget.pkg.github.com/soupify-app/index.json -n github -u prostakov -p ${{ secrets.NUGET_API_KEY }} --store-password-in-clear-text
+        
+      - name: Create nuget package
+        run: dotnet pack -c Release /p:Version=${GITVERSION_FULLSEMVER/+/.} /p:RepositoryUrl=https://github.com/${{ github.repository }}
+        working-directory: ${{ inputs.workingDirectory }}
+        
+      - name: Publish nuget package
+        run: dotnet nuget push ${{ inputs.workingDirectory }}/**/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source github --no-symbolss
