@@ -21,14 +21,14 @@ jobs:
           fetch-depth: 0
 
       - name: Git Version
-        id: version
-        uses: codacy/git-version@2.7.1
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0
       
       - name: Add nuget github source
         run: dotnet nuget add source https://nuget.pkg.github.com/soupify-app/index.json -n github -u prostakov -p ${{ secrets.NUGET_API_KEY }} --store-password-in-clear-text
         
       - name: Create nuget package
-        run: dotnet pack -c Release /p:Version=${{ steps.version.outputs.version }} /p:RepositoryUrl=https://github.com/${{ github.repository }}
+        run: dotnet pack -c Release /p:Version=${{ steps.gitversion.outputs.GitVersion_FullSemVer }} /p:RepositoryUrl=https://github.com/${{ github.repository }}
         working-directory: ${{ inputs.workingDirectory }}
         
       - name: Publish nuget package
