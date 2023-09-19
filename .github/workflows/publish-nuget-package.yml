@@ -17,6 +17,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
+          node-version: 16
           ref: ${{ github.head_ref }}
           fetch-depth: 0
           
