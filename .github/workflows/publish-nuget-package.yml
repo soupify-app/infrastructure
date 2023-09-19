@@ -31,9 +31,9 @@ jobs:
       
       - name: Add nuget github source
         run: dotnet nuget add source https://nuget.pkg.github.com/soupify-app/index.json -n github -u prostakov -p ${{ secrets.NUGET_API_KEY }} --store-password-in-clear-text
-        
+
       - name: Create nuget package
-        run: dotnet pack -c Release /p:Version=${FullSemVer/+/.} /p:RepositoryUrl=https://github.com/${{ github.repository }}
+        run: dotnet pack -c Release /p:Version=$FullSemVer /p:RepositoryUrl=https://github.com/${{ github.repository }}
         working-directory: ${{ inputs.workingDirectory }}
         
       - name: Publish nuget package
